@@ -109,7 +109,7 @@ git push -u origin "reset-changelog-${major_version}-${minor_version}"
 log_info "Get this PR merged NOW!!"
 
 is_merged="n"
-until [[ ! "${is_merged}" =~ ^[yY]$ ]]; do
+until [[ "${is_merged}" =~ ^[yY]$ ]]; do
   log_info_no_newline "Is it merged to both release-${major_version}-${minor_version} and main? (y/n): "
   read -r is_merged
 done
