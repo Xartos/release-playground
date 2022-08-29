@@ -22,7 +22,7 @@ make_sure_branch_is_up_to_date "release-${major_version}.${minor_version}"
 # Create the tag and push.
 # This will start the github action to create the release.
 tag="v${major_version}.${minor_version}.0"
-log_warning "Your about to create the release ${tag} are you sure? (y/n)"
+log_warning_no_newline "Your about to create the release ${tag} are you sure? (y/n): "
 read -r sure_to_release
 if [[ ! "${sure_to_release}" =~ ^[yY]$ ]]; then
   exit 1
@@ -39,8 +39,10 @@ if ! git log -1 --format=%s | grep -P "^Reset changelog for release ${tag}$" > /
   git pull
 
   git switch -c "patches-from-release-${major_version}.${minor_version}"
+  git push -u origin "patches-from-release-${major_version}.${minor_version}"
 
+  log_info "Please run these commands from top to bottom and fix any merge conflicts, then merge this to the main branch:"
   for commit in $(git log "${reset_commit}..${release_head_commit}" --format=%h); do
-    git cherry-pick "${commit}"
+    echo "git cherry-pick ${commit}"
   done
 fi
