@@ -6,8 +6,13 @@ here="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 
 source "${here}/common.sh"
 
-log_info_no_newline "What version version to you want to create (like v1.2.0): "
-read -r full_version
+# log_info_no_newline "What version version to you want to create (like v1.2.0): "
+if [ $# -lt 1 ]; then
+  log_error "Usage: $0 vX.Y.0"
+  exit 1
+fi
+
+full_version="${1}"
 if [[ ! "${full_version}" =~ ^v[0-9]+.[0-9]+.0$ ]]; then
   log_error "ERROR: Version must be in the form vX.Y.0 (where X is major and Y is minor version). Got: ${full_version}"
   exit 1
