@@ -7,7 +7,7 @@ here="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 source "${here}/common.sh"
 
 if [ $# -lt 1 ]; then
-  log_error "Usage: $0 vX.Y.0"
+  log_error "Usage: $0 vX.Y.Z"
   exit 1
 fi
 
@@ -22,12 +22,12 @@ expected_minor_version=$(echo "${current_branch}" | sed 's/release-[0-9]\+\.\([0
 
 # Make sure branch is up to date with upstream (might happen if someone missed to run pull after merging QA branch)
 git fetch origin
-make_sure_branch_is_up_to_date "release-${major_version}.${minor_version}"
+make_sure_branch_is_up_to_date "release-${expected_major_version}.${expected_minor_version}"
 
 # log_info_no_newline "What patch version do you want to release?: v${major_version}.${minor_version}."
 full_version="${1}"
 if [[ ! "${full_version}" =~ ^v[0-9]+.[0-9]+.[0-9]+$ ]]; then
-  log_error "ERROR: Version must be in the form vX.Y.0 (where X is major and Y is minor version). Got: ${full_version}"
+  log_error "ERROR: Version must be in the form vX.Y.Z (where X is major and Y is minor version). Got: ${full_version}"
   exit 1
 fi
 major_version=$(echo "${full_version}" | sed 's/v\([0-9]\+\)\.[0-9]\+\.[0-9]\+/\1/')
