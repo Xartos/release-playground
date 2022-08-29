@@ -44,5 +44,5 @@ git push -u origin "patch-${major_version}.${minor_version}.${patch_version}"
 
 log_info "Now you're on the patch branch."
 log_info "Add all commits you want to include in this patch by running 'git cherry-pick <commit>' or manually update the files"
-log_info "Then run './reset-changelog.sh ${major_version}.${minor_version}.${patch_version}' and merge this branch into the release branch (release-${major_version}.${minor_version})"
-log_info "When that's done, run create-patch-release.sh"
+log_info "Then run './reset-changelog.sh v${major_version}.${minor_version}.${patch_version}' and merge this branch into the release branch (release-${major_version}.${minor_version})"
+log_info "When that's done, switch to that branch and run create-patch-release.sh"

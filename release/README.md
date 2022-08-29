@@ -54,9 +54,10 @@ https://semver.org/
 
 1. Create a PR into the release branch and merge it.
 
-1. When the PR is merged, run:
+1. When the PR is merged, switch to that branch and run:
 
     ```bash
+    git switch release-X.Y
     release/create-patch-release.sh
     ```
 

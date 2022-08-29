@@ -73,7 +73,7 @@ fi
 ## Check if reset changelog commit exists
 if ! reset_commit_found; then
   git switch -c "reset-changelog-${major_version}.${minor_version}"
-  "${here}/reset-changelog.sh" "${major_version}.${minor_version}.0"
+  "${here}/reset-changelog.sh" "v${major_version}.${minor_version}.0"
 
   for file in $(git diff "${current_commit_hash}" --name-only); do
     if [[ ! "${file}" =~ ^(CHANGELOG.md|WIP-CHANGELOG.md)$ ]]; then
