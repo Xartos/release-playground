@@ -3,6 +3,7 @@
 set -eu -o pipefail
 
 commit_lookback=10
+this_repo="Xartos/release-playground"
 
 make_sure_branch_is_up_to_date() {
   if [[ "$(git rev-parse "${1}")" != "$(git rev-parse "origin/${1}")" ]]; then
