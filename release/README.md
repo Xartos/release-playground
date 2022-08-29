@@ -9,6 +9,7 @@ https://semver.org/
 
     ```bash
     git switch main
+    git pull
     release/feature-freeze-for-major-minor-release.sh vX.Y.0
     ```
 
@@ -21,6 +22,8 @@ https://semver.org/
 1. When the PR is merged switch to that branch and run:
 
     ```bash
+    git switch release-X.Y
+    git pull
     release/create-major-minor-release.sh
     ```
 
@@ -46,6 +49,8 @@ https://semver.org/
 1. You should now be on the patch branch.
     Cherry-pick or manually add all fixes that you want to include in the patch.
 
+    **NOTE**: All changes made in the patch branch should be added to `WIP-CHANGELOG.md` and **NOT** `CHANGELOG.md`.
+
 1. Run reset-changelog:
 
     ```bash
@@ -58,6 +63,7 @@ https://semver.org/
 
     ```bash
     git switch release-X.Y
+    git pull
     release/create-patch-release.sh vX.Y.Z
     ```
 
