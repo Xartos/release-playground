@@ -127,4 +127,4 @@ fi
 
 log_info "Now you're on the QA branch, finish all QA stuff and put all fixes here."
 log_info "All changes should be noted in the CHANGELOG.md directly"
-log_info "When it's done run the create-major-minor-release.sh script to create the release"
+log_info "When it's done merge this into the release branch (release-${major_version}.${minor_version}) and then run the create-major-minor-release.sh script to create the release"
