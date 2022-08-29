@@ -9,7 +9,7 @@ https://semver.org/
 
     ```bash
     git switch main
-    release/feature-freeze-for-major-minor-release.sh
+    release/feature-freeze-for-major-minor-release.sh vX.Y.0
     ```
 
 1. Now you should be on the QA branch, so now is the time to do QA and add all fixes on this branch.
@@ -40,7 +40,7 @@ https://semver.org/
 1. Run the prepare patch command:
 
     ```bash
-    release/prepare-patch-release.sh
+    release/prepare-patch-release.sh vX.Y.Z
     ```
 
 1. You should now be on the patch branch.
@@ -58,7 +58,7 @@ https://semver.org/
 
     ```bash
     git switch release-X.Y
-    release/create-patch-release.sh
+    release/create-patch-release.sh vX.Y.Z
     ```
 
     *When the script is done a [GitHub actions workflow pipeline](/.github/workflows/release.yml) should've created a GitHub release from that tag.*
