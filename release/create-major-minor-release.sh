@@ -2,36 +2,45 @@
 
 set -eu -o pipefail
 
+here="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+
+source "${here}/common.sh"
+
 current_branch=$(git symbolic-ref -q --short HEAD)
-commit_lookback=10
-if [[ ! "${current_branch}" =~ ^release-[0-9]+-[0-9]+$ ]]; then
-  #TODO Log something here
+if [[ ! "${current_branch}" =~ ^release-[0-9]+\.[0-9]+$ ]]; then
+  log_error "Error: Expected to be on release branch, e.g. release-1.2. Got: ${current_branch}"
   exit 1
 fi
 
-major_version=$(echo "${current_branch}" | sed 's/release-\([0-9]\+\)-[0-9]\+/\1/')
-minor_version=$(echo "${current_branch}" | sed 's/release-[0-9]\+-\([0-9]\+\)/\1/')
+major_version=$(echo "${current_branch}" | sed 's/release-\([0-9]\+\)\.[0-9]\+/\1/')
+minor_version=$(echo "${current_branch}" | sed 's/release-[0-9]\+\.\([0-9]\+\)/\1/')
 
-# Compare and see if there's any diff from release branch
+# Make sure branch is up to date with upstream (might happen if someone missed to run pull after merging QA branch)
+git fetch origin
+make_sure_branch_is_up_to_date "release-${major_version}.${minor_version}"
 
-git tag "v${major_version}.${minor_version}.0"
+# Create the tag and push.
+# This will start the github action to create the release.
+tag="v${major_version}.${minor_version}.0"
+log_warning "Your about to create the release ${tag} are you sure? (y/n)"
+read -r sure_to_release
+if [[ ! "${sure_to_release}" =~ ^[yY]$ ]]; then
+  exit 1
+fi
+
+git tag "${tag}"
 git push --tags
 
-if ! git log -1 --format=%s | grep -P "^Reset changelog for release v${major_version}.${minor_version}.0$" > /dev/null; then
-  echo "Changes in QA"
-  # Merge to main
-
+if ! git log -1 --format=%s | grep -P "^Reset changelog for release ${tag}$" > /dev/null; then
   release_head_commit=$(git rev-parse --short HEAD)
-  reset_commit=$(git log "-${commit_lookback}" --oneline | grep -P "Reset changelog for release v0.1.0$" | awk '{print $1}')
+  reset_commit=$(git log "-${commit_lookback}" --oneline | grep -P "Reset changelog for release ${tag}$" | awk '{print $1}')
 
   git switch main
   git pull
 
-  git switch -c "patches-from-release-${major_version}-${minor_version}"
+  git switch -c "patches-from-release-${major_version}.${minor_version}"
 
   for commit in $(git log "${reset_commit}..${release_head_commit}" --format=%h); do
     git cherry-pick "${commit}"
   done
-else
-  echo "No changes in QA"
 fi
