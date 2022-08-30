@@ -23,7 +23,7 @@ expected_minor_version=$(echo "${current_branch}" | sed 's/release-[0-9]\+\.\([0
 
 # Make sure branch is up to date with upstream (might happen if someone missed to run pull after merging QA branch)
 git fetch origin
-make_sure_branch_is_up_to_date "release-${major_version}.${minor_version}"
+make_sure_branch_is_up_to_date "release-${expected_major_version}.${expected_minor_version}"
 
 full_version="${1}"
 if [[ ! "${full_version}" =~ ^v[0-9]+.[0-9]+.[0-9]+$ ]]; then
