@@ -4,6 +4,7 @@ set -eu -o pipefail
 
 here="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 
+# shellcheck source=release/common.sh
 source "${here}/common.sh"
 
 if [ $# -lt 1 ]; then
@@ -17,7 +18,9 @@ if [[ ! "${current_branch}" =~ ^release-[0-9]+\.[0-9]+$ ]]; then
   exit 1
 fi
 
+# shellcheck disable=SC2001
 expected_major_version=$(echo "${current_branch}" | sed 's/release-\([0-9]\+\)\.[0-9]\+/\1/')
+# shellcheck disable=SC2001
 expected_minor_version=$(echo "${current_branch}" | sed 's/release-[0-9]\+\.\([0-9]\+\)/\1/')
 
 # Make sure branch is up to date with upstream (might happen if someone missed to run pull after merging QA branch)
@@ -30,10 +33,13 @@ if [[ ! "${full_version}" =~ ^v[0-9]+.[0-9]+.[0-9]+$ ]]; then
   log_error "ERROR: Version must be in the form vX.Y.0 (where X is major and Y is minor version). Got: ${full_version}"
   exit 1
 fi
+# shellcheck disable=SC2001
 major_version=$(echo "${full_version}" | sed 's/v\([0-9]\+\)\.[0-9]\+\.[0-9]\+/\1/')
+# shellcheck disable=SC2001
 minor_version=$(echo "${full_version}" | sed 's/v[0-9]\+\.\([0-9]\+\)\.[0-9]\+/\1/')
+# shellcheck disable=SC2001
 patch_version=$(echo "${full_version}" | sed 's/v[0-9]\+\.[0-9]\+\.\([0-9]\+\)/\1/')
-if [ ${expected_major_version} -ne ${major_version} ] || [ ${expected_minor_version} -ne ${minor_version} ]; then
+if [ "${expected_major_version}" -ne "${major_version}" ] || [ "${expected_minor_version}" -ne "${minor_version}" ]; then
   log_error "Error: Version mismatch: Expected v${expected_major_version}.${expected_minor_version}.${patch_version} Got: v${major_version}.${minor_version}.${patch_version}"
   exit 1
 fi
