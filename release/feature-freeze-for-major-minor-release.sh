@@ -4,6 +4,7 @@ set -eu -o pipefail
 
 here="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 
+# shellcheck source=release/common.sh
 source "${here}/common.sh"
 
 # log_info_no_newline "What version version to you want to create (like v1.2.0): "
@@ -17,7 +18,9 @@ if [[ ! "${full_version}" =~ ^v[0-9]+.[0-9]+.0$ ]]; then
   log_error "ERROR: Version must be in the form vX.Y.0 (where X is major and Y is minor version). Got: ${full_version}"
   exit 1
 fi
+# shellcheck disable=SC2001
 major_version=$(echo "${full_version}" | sed 's/v\([0-9]\+\)\.[0-9]\+\.0/\1/')
+# shellcheck disable=SC2001
 minor_version=$(echo "${full_version}" | sed 's/v[0-9]\+\.\([0-9]\+\)\.0/\1/')
 
 if [[ ! "${major_version}" =~ ^[0-9]+$ ]]; then
@@ -71,7 +74,7 @@ else
 fi
 
 ## Check if reset changelog commit exists
-if ! reset_commit_found; then
+if ! reset_commit_found "${major_version}" "${minor_version}"; then
   git switch -c "reset-changelog-${major_version}.${minor_version}"
   "${here}/reset-changelog.sh" "v${major_version}.${minor_version}.0"
 
@@ -100,7 +103,7 @@ done
 
 git switch main
 git pull
-if ! reset_commit_found; then
+if ! reset_commit_found "${major_version}" "${minor_version}"; then
   log_error "Reset changelog doesn't seem to be in the last 10 commits in main"
   exit 1
 fi
@@ -108,7 +111,7 @@ fi
 git switch "release-${major_version}.${minor_version}"
 git pull
 
-if ! reset_commit_found; then
+if ! reset_commit_found "${major_version}" "${minor_version}"; then
   log_error "Reset changelog doesn't seem to be in the last 10 commits in release-${major_version}.${minor_version}"
   exit 1
 fi

@@ -4,6 +4,7 @@ set -eu -o pipefail
 
 here="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 
+# shellcheck source=release/common.sh
 source "${here}/common.sh"
 
 current_branch=$(git symbolic-ref -q --short HEAD)
@@ -12,7 +13,9 @@ if [[ ! "${current_branch}" =~ ^release-[0-9]+\.[0-9]+$ ]]; then
   exit 1
 fi
 
+# shellcheck disable=SC2001
 major_version=$(echo "${current_branch}" | sed 's/release-\([0-9]\+\)\.[0-9]\+/\1/')
+# shellcheck disable=SC2001
 minor_version=$(echo "${current_branch}" | sed 's/release-[0-9]\+\.\([0-9]\+\)/\1/')
 
 # Make sure branch is up to date with upstream (might happen if someone missed to run pull after merging QA branch)
